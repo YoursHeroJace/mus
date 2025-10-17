@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LyricsHub</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #00ffb3;
+      text-shadow: 0 0 10px #00ffb3;
+    }
+
+    .search-box {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    input {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border: none;
+      border-radius: 30px;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 30px;
+      background: #00ffb3;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #00cc8f;
+    }
+
+    .lyrics-container {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0, 255, 179, 0.2);
+      white-space: pre-wrap;
+      text-align: left;
+      overflow-y: auto;
+      max-height: 60vh;
+    }
+
+    .lyrics-container h2 {
+      margin-bottom: 1rem;
+      color: #00ffb3;
+    }
+
+    footer {
+      margin-top: 2rem;
+      color: #666;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎵 LyricsHub</h1>
+    <p>Find lyrics of any song instantly!</p>
+  </header>
+
+  <div class="search-box">
+    <input type="text" id="songInput" placeholder="Enter song name..." />
+    <button onclick="getLyrics()">Search</button>
+  </div>
+
+  <div class="lyrics-container" id="lyricsContainer">
+    <h2>Lyrics will appear here...</h2>
+  </div>
+
+  <footer>© 2025 LyricsHub | Made with ❤️ by Jace</footer>
+
+  <script>
+    async function getLyrics() {
+      const songName = document.getElementById("songInput").value.trim();
+      const container = document.getElementById("lyricsContainer");
+
+      if (!songName) {
+        container.innerHTML = "<h2>Please enter a song name!</h2>";
+        return;
+      }
+
+      container.innerHTML = "<h2>Searching lyrics...</h2>";
+
+      try {
+        const res = await fetch(`https://api.lyrics.ovh/v1/${songName}`);
+        const data = await res.json();
+
+        if (data.lyrics) {
+          container.innerHTML = `<h2>${songName}</h2><p>${data.lyrics}</p>`;
+        } else {
+          container.innerHTML = `<h2>No lyrics found for "${songName}".</h2>`;
+        }
+      } catch (err) {
+        container.innerHTML = `<h2>Something went wrong. Try again later.</h2>`;
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
