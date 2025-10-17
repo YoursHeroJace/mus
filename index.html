@@ -38,15 +38,16 @@
 
     .search-box {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       gap: 10px;
+      align-items: center;
       margin-bottom: 2rem;
       width: 100%;
       max-width: 600px;
     }
 
     input {
-      flex: 1;
+      width: 100%;
       padding: 0.8rem 1rem;
       border: none;
       border-radius: 30px;
@@ -101,8 +102,9 @@
   </header>
 
   <div class="search-box">
-    <input type="text" id="songInput" placeholder="Enter song name..." />
-    <button onclick="getLyrics()">Search</button>
+    <input type="text" id="artistInput" placeholder="Enter artist name..." />
+    <input type="text" id="songInput" placeholder="Enter song title..." />
+    <button onclick="getLyrics()">Search Lyrics</button>
   </div>
 
   <div class="lyrics-container" id="lyricsContainer">
@@ -113,24 +115,25 @@
 
   <script>
     async function getLyrics() {
-      const songName = document.getElementById("songInput").value.trim();
+      const artist = document.getElementById("artistInput").value.trim();
+      const title = document.getElementById("songInput").value.trim();
       const container = document.getElementById("lyricsContainer");
 
-      if (!songName) {
-        container.innerHTML = "<h2>Please enter a song name!</h2>";
+      if (!artist || !title) {
+        container.innerHTML = "<h2>Please enter both artist and song name!</h2>";
         return;
       }
 
       container.innerHTML = "<h2>Searching lyrics...</h2>";
 
       try {
-        const res = await fetch(`https://api.lyrics.ovh/v1/${songName}`);
+        const res = await fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`);
         const data = await res.json();
 
         if (data.lyrics) {
-          container.innerHTML = `<h2>${songName}</h2><p>${data.lyrics}</p>`;
+          container.innerHTML = `<h2>${artist} - ${title}</h2><p>${data.lyrics}</p>`;
         } else {
-          container.innerHTML = `<h2>No lyrics found for "${songName}".</h2>`;
+          container.innerHTML = `<h2>No lyrics found for "${artist} - ${title}".</h2>`;
         }
       } catch (err) {
         container.innerHTML = `<h2>Something went wrong. Try again later.</h2>`;
